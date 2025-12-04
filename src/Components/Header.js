@@ -10,12 +10,11 @@ const Header = () => {
     <header className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
         
-        {/* LOGO */}
         <Link to="/" className="text-2xl font-extrabold text-orange-600 cursor-pointer select-none no-underline">
           Hemant's Recipe Hub
         </Link>
 
-        {/* DESKTOP MENU */}
+        
         <nav className="hidden md:flex space-x-4 items-center">
           <Link
             to="/"
@@ -39,7 +38,7 @@ const Header = () => {
           </button>
         </nav>
 
-        {/* MOBILE MENU ICON */}
+        
         <div className="md:hidden">
           <FaBars 
             className="text-2xl text-gray-700 cursor-pointer" 
@@ -48,7 +47,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* MOBILE MENU DROPDOWN */}
+      
       {isOpen && (
         <div className="md:hidden bg-white shadow-md px-4 pb-4 space-y-3 animate-slideDown">
           <Link to="/" className="block px-4 py-2 rounded-lg bg-gray-100 text-black no-underline">Home</Link>

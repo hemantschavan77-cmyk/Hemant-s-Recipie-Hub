@@ -5,7 +5,7 @@ const RecipeDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const recipe = location.state?.recipe; // safe access
+  const recipe = location.state?.recipe; 
 
   if (!recipe) {
     return (

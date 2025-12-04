@@ -1,4 +1,3 @@
-// src/Components/SubmitRecipie.jsx
 import React, { useState } from 'react';
 import { saveRecipe } from '../utils/localStorage';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +23,7 @@ const SubmitRecipie = () => {
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
 
-  // ---- Ingredient Handlers ----
+  
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
     newIngredients[index] = value;
@@ -33,14 +32,14 @@ const SubmitRecipie = () => {
   const handleAddIngredient = () => setIngredients([...ingredients, '']);
   const handleRemoveIngredient = (index) => setIngredients(ingredients.filter((_, i) => i !== index));
 
-  // ---- Tag Handler ----
+  
   const handleTagChange = (e) => {
     const inputString = e.target.value;
     const newTags = inputString.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
     setTags(newTags);
   };
 
-  // ---- Image Handler (Base64) ----
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -52,7 +51,7 @@ const SubmitRecipie = () => {
     }
   };
 
-  // ---- Submit Handler ----
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     // validation
@@ -76,7 +75,7 @@ const SubmitRecipie = () => {
       comments: [],
     };
 
-    // save via shared util (adds id)
+    
     const updatedList = saveRecipe(newRecipe);
 
     setModalData({
@@ -86,7 +85,7 @@ const SubmitRecipie = () => {
     });
     setIsModalOpen(true);
 
-    // Clear form
+    
     setRecipeTitle('');
     setDescription('');
     setCategory('Main Course');

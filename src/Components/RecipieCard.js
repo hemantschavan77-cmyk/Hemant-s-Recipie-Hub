@@ -5,12 +5,12 @@ import { HiOutlineBookmark } from 'react-icons/hi';
 const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
   const { title, imageFile, category, rating = 0, id } = recipe;
 
-  // show likes from recipe prop (parent manages likes)
+  
   const likes = recipe.likes || 0;
 
   const handleLike = (e) => {
     e.stopPropagation();
-    if (onLike) onLike(); // parent will update central state and persist
+    if (onLike) onLike(); 
   };
 
   const renderStars = (ratingVal) => {
@@ -28,7 +28,7 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
   };
 
   const handleDelete = (e) => {
-    e.stopPropagation(); // prevent navigating to recipe details
+    e.stopPropagation(); 
     if (onDelete) onDelete(id);
   };
 

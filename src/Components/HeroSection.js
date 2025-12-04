@@ -8,7 +8,7 @@ const HeroSection = ({ selectedCategory, setSelectedCategory, onSearch }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    if (onSearch) onSearch(value); // call search from Home.js
+    if (onSearch) onSearch(value); 
   };
 
   return (

@@ -1,6 +1,3 @@
-// src/utils/localStorage.js
-
-// Recipe functions
 const RECIPE_KEY = 'recipes';
 
 export const getRecipes = () => {
@@ -43,7 +40,6 @@ export const clearRecipes = () => {
   }
 };
 
-// User functions
 const USER_KEY = 'users';
 const LOGGEDIN_KEY = 'loggedInUser';
 
