@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { saveUser, loginUser, getUsers } from '../utils/localStorage';
+import { saveUser, loginUser, getUsers } from '../utils/authStorage';
 import { useNavigate } from 'react-router-dom';
 
 const MailIcon = () => <span className="text-xl mr-2">📧</span>;

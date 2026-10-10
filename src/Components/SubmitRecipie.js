@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { saveRecipe } from '../utils/localStorage';
+// import { saveRecipe } from '../utils/localStorage';  //replaced with backend
 import { useNavigate } from 'react-router-dom';
+import api from '../api/axios';
 
 const RecipeIcon = () => <span className="text-xl">🍲</span>;
 const IngredientIcon = () => <span className="text-xl">🥕</span>;
@@ -11,7 +12,7 @@ const RemoveIcon = () => <span className="text-xl">❌</span>;
 const CategoryIcon = () => <span className="text-xl">🧑‍🍳</span>;
 
 const SubmitRecipie = () => {
-  const categories = ['Main Course', 'Snacks', 'Dessert', 'Beverage', 'Side Dish', 'Soup/Stew', 'Breakfast'];
+  const categories = ['Main Course', 'Snacks', 'Dessert', 'Beverage', 'Side Dish', 'Soup/Stew', 'Breakfast','spicy'];
 
   const [recipeTitle, setRecipeTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -45,7 +46,7 @@ const SubmitRecipie = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImageFile(reader.result); // store Base64 string
+        setImageFile(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -54,7 +55,6 @@ const SubmitRecipie = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    // validation
     if (!recipeTitle.trim() || !description.trim() || !category || ingredients.length === 0 || ingredients.every(i => !i.trim())) {
       setModalData({
         title: 'Submission Error',
@@ -64,34 +64,42 @@ const SubmitRecipie = () => {
       return;
     }
 
-    const newRecipe = {
-      title: recipeTitle.trim(),
-      category,
-      description: description.trim(),
-      ingredients: ingredients.filter(i => i.trim() !== ''),
-      tags,
-      imageFile: imageFile || null,
-      likes: 0,
-      comments: [],
-    };
+    
+  api.post("/api/recipes", {
+  title: recipeTitle.trim(),
+  category,
+  description: description.trim(),
+  ingredients: ingredients.filter(i => i.trim() !== ''),
+  tags,
+  imageBase64: imageFile || null,
+})
+.then((res) => {
+  const savedRecipe = res.data;
+
+  setModalData({
+    title: "Recipe submitted successfully !!!",
+    message: "Your recipe has been saved and will appear on home page",
+    details: savedRecipe,
+  });
+  setIsModalOpen(true);
+
+  setRecipeTitle('');
+  setDescription('');
+  setCategory('Main Course');
+  setIngredients(['']);
+  setTags([]);
+  setImageFile(null);
+})
+.catch((err) => {
+  setModalData({
+    title: "Submission error",
+    message: err.response?.data?.message || err.message,
+  });
+  setIsModalOpen(true);
+});
 
     
-    const updatedList = saveRecipe(newRecipe);
-
-    setModalData({
-      title: 'Recipe Submitted Successfully!',
-      message: 'Your recipe has been saved locally and will appear on the home page.',
-      details: { ...newRecipe, id: updatedList[updatedList.length - 1].id }
-    });
-    setIsModalOpen(true);
-
     
-    setRecipeTitle('');
-    setDescription('');
-    setCategory('Main Course');
-    setIngredients(['']);
-    setTags([]);
-    setImageFile(null);
   };
 
   const SubmissionModal = () => {
@@ -114,7 +122,9 @@ const SubmitRecipie = () => {
               <ul className="list-disc list-inside max-h-32 overflow-y-auto">
                 {modalData.details.ingredients.map((item, index) => <li key={index} className="text-sm">{item}</li>)}
               </ul>
-              {modalData.details.imageFile && <img src={modalData.details.imageFile} alt="Recipe" className="mt-2 w-full h-48 object-cover rounded" />}
+              {modalData.details.imageBase64 && (
+  <img src={modalData.details.imageBase64} alt="Recipe" className="mt-2 w-full h-48 object-cover rounded" /> )}
+
             </div>
           )}
           <div className="flex gap-2 justify-end">
@@ -135,7 +145,7 @@ const SubmitRecipie = () => {
       <SubmissionModal />
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl">
         <header className="mb-6">
-          <h1 className="text-2xl font-bold text-orange-600 mb-2">Submit Your Monsoon Recipe <RecipeIcon /></h1>
+          <h1 className="text-2xl font-bold text-orange-600 mb-2">Upload Your Recipe <RecipeIcon /></h1>
           <p className="text-gray-600">All fields are required.</p>
         </header>
 
@@ -189,3 +199,6 @@ const SubmitRecipie = () => {
 };
 
 export default SubmitRecipie;
+
+
+

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import HeroSection from "./HeroSection";
 import RecipeCard from "./RecipieCard";
 import { useNavigate } from "react-router-dom";
-import { getRecipes, removeRecipe } from "../utils/localStorage";
+import api from "../api/axios";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -12,18 +12,21 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  
-  useEffect(() => {
-    const stored = getRecipes();
-    const prepared = stored.map((r) => ({
-      likes: r.likes || 0,
-      comments: r.comments || [],
-      ...r,
-    }));
-    setAllRecipes(prepared);
-    setFilteredRecipes(prepared);
-  }, []);
-
+  useEffect(()=>{
+    api.get("/api/recipes")
+    .then((res)=>{
+      const prepared = res.data.map((r)=> ({
+        likes : r.likes || 0,
+        comments : r.comments || [],
+        ...r
+      }));
+      setAllRecipes(prepared);
+      setFilteredRecipes(prepared);
+    })
+    .catch((err)=>{
+      console.error("Error fetching recipies" + err);
+    });
+  },[]);
   
   const filterRecipes = (categoryArg, searchArg, source = allRecipes) => {
     let filtered = source;
@@ -31,12 +34,6 @@ const Home = () => {
     if (categoryArg) {
       filtered = filtered.filter(
         (r) => (r.category || "").toLowerCase() === categoryArg.toLowerCase()
-      );
-    }
-
-    if (searchArg) {
-      filtered = filtered.filter((r) =>
-        (r.title || "").toLowerCase().includes(searchArg.toLowerCase())
       );
     }
 
@@ -49,36 +46,67 @@ const Home = () => {
   };
 
   const handleSearch = (term) => {
-    setSearchTerm(term);
-    filterRecipes(selectedCategory, term);
-  };
+  setSearchTerm(term);
+
+  if (!term.trim()) {
+    api.get("/api/recipes").then((res) => {
+      setAllRecipes(res.data);
+      filterRecipes(selectedCategory, "", res.data);
+    });
+    return;
+  }
+
+  api
+    .get(`/api/recipes/search?title=${term}`)
+    .then((res) => {
+      setAllRecipes(res.data);
+      filterRecipes(selectedCategory, term, res.data);
+    })
+    .catch((err) => {
+      console.error("Search failed", err);
+    });
+};
+
 
   const handleLike = (id) => {
-    const updated = allRecipes.map((r) =>
-      r.id === id ? { ...r, likes: (r.likes || 0) + 1 } : r
-    );
+  api
+    .patch(`/api/recipes/${id}/like`)
+    .then((res) => {
+      const updatedRecipe = res.data;
 
-    localStorage.setItem("recipes", JSON.stringify(updated));
-    setAllRecipes(updated);
+      const updatedList = allRecipes.map((r) =>
+        r.id === updatedRecipe.id ? updatedRecipe : r
+      );
 
-    filterRecipes(selectedCategory, searchTerm, updated);
-  };
+      setAllRecipes(updatedList);
+      filterRecipes(selectedCategory, searchTerm, updatedList);
+    })
+    .catch((err) => {
+      console.error("Failed to like recipe", err);
+      alert("Failed to like recipe");
+    });
+};
+
 
   const handleDeleteRecipe = (id) => {
-    const updated = removeRecipe(id);
+  api
+    .delete(`/api/recipes/${id}`)
+    .then(() => {
+      const updated = allRecipes.filter((r) => r.id !== id);
 
-    const prepared = updated.map((r) => ({
-      likes: r.likes || 0,
-      comments: r.comments || [],
-      ...r,
-    }));
+      setAllRecipes(updated);
+      filterRecipes(selectedCategory, searchTerm, updated);
+    })
+    .catch((err) => {
+      console.error("Failed to delete recipe", err);
+      alert("Failed to delete recipe");
+    });
+};
 
-    setAllRecipes(prepared);
-    filterRecipes(selectedCategory, searchTerm, prepared);
-  };
 
   const handleViewRecipe = (recipe) => {
-    navigate("/recipe-details", { state: { recipe } });
+    navigate(`/recipe-details/${recipe.id}`);
+
   };
 
   return (

@@ -3,7 +3,7 @@ import { FaStar, FaRegStar } from 'react-icons/fa';
 import { HiOutlineBookmark } from 'react-icons/hi';
 
 const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
-  const { title, imageFile, category, rating = 0, id } = recipe;
+  const { title, imageBase64, category, rating = 3, id } = recipe;
 
   
   const likes = recipe.likes || 0;
@@ -22,7 +22,7 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
         ) : (
           <FaRegStar key={i} className="text-gray-300 w-4 h-4" />
         )
-      );
+        );
     }
     return <div className="flex">{stars}</div>;
   };
@@ -36,7 +36,7 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden group cursor-pointer" onClick={onViewRecipe}>
       <div className="relative">
         <img
-          src={imageFile || '/images/default.jpg'}
+          src={imageBase64 || 'default-recipe.jpg'}
           alt={title}
           className="w-full h-48 object-cover group-hover:scale-[1.03] transition-transform duration-500"
         />
@@ -76,8 +76,8 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>  
   );
+  
 };
-
 export default RecipeCard;

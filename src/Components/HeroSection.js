@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 
 const HeroSection = ({ selectedCategory, setSelectedCategory, onSearch }) => {
-  const categories = ["Spicy", "Snacks", "Chai", "Desserts"];
+  const categories = ['Main Course', 'Snacks', 'Dessert', 'Beverage', 'Side Dish', 'Soup/Stew', 'Breakfast','spicy'];
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (e) => {
@@ -10,7 +10,6 @@ const HeroSection = ({ selectedCategory, setSelectedCategory, onSearch }) => {
     setSearchTerm(value);
     if (onSearch) onSearch(value); 
   };
-
   return (
     <div
       className="relative h-96 bg-cover bg-center flex items-center justify-center text-white p-4"
