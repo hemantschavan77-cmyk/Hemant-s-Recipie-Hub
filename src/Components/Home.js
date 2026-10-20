@@ -98,6 +98,29 @@ const Home = () => {
       });
   };
 
+  const handleSaveRecipe = (id) => {
+    api
+      .patch(`/api/recipes/${id}/save`)
+      .then((res) => {
+        const isSaved = res.data;
+
+        alert(
+          isSaved
+            ? "Recipe saved successfully!"
+            : "Recipe removed from saved recipes."
+        );
+      })
+      .catch((err) => {
+        console.error("Failed to save recipe", err);
+
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          alert("Your session may have expired. Please log in again.");
+        } else {
+          alert("Failed to update saved recipe. Please try again.");
+        }
+      });
+  };
+
 
   const handleDeleteRecipe = (id) => {
     api
@@ -145,6 +168,7 @@ const Home = () => {
                   onViewRecipe={() => handleViewRecipe(recipe)}
                   onLike={() => handleLike(recipe.id)}
                   onDelete={() => handleDeleteRecipe(recipe.id)}
+                  onSave={handleSaveRecipe}
                 />
               ))
             )}

@@ -1,8 +1,9 @@
 import React from 'react';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import { HiOutlineBookmark } from 'react-icons/hi';
+import { getToken } from '../utils/authStorage';
 
-const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
+const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete, onSave }) => {
   const { title, imageBase64, category, rating = 3, id } = recipe;
 
   
@@ -10,7 +11,29 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    if (onLike) onLike(); 
+    if(!getToken())
+    {
+      alert("Please Log in to like recipes");
+      return;
+    }
+
+    if (onLike)
+      { 
+        onLike();
+      } 
+  };
+
+  const handleSave = (e) => {
+  e.stopPropagation();
+
+    if (!getToken()) {
+      alert("Please log in to save recipes.");
+      return;
+    }
+
+    if (onSave) {
+      onSave(id);
+    }
   };
 
   const renderStars = (ratingVal) => {
@@ -47,7 +70,12 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete }) => {
         >
           {category}
         </span>
-        <button className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md text-gray-600 hover:text-orange-500 transition" onClick={(e) => { e.stopPropagation(); /* placeholder for bookmark action */ }}>
+        <button
+          onClick={handleSave}
+          aria-label="Save recipe"
+          title="Save recipe"
+          className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md text-gray-600 hover:text-orange-500 transition"
+        >
           <HiOutlineBookmark className="w-5 h-5" />
         </button>
       </div>

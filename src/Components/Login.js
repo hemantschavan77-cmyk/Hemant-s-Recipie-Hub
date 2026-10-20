@@ -85,7 +85,7 @@ const handleSubmit = async (e) => {
           </div>
 
           <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg mt-2">
-            {isLogin ? 'Login to Monsoon Hub' : 'Create Account'}
+            {isLogin ? 'Login to Recipe Hub' : 'Create Account'}
           </button>
         </form>
 
