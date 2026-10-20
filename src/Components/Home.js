@@ -7,27 +7,28 @@ import api from "../api/axios";
 const Home = () => {
   const navigate = useNavigate();
 
-  const [allRecipes, setAllRecipes] = useState([]); 
+  const [allRecipes, setAllRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(()=>{
+  useEffect(() => {
     api.get("/api/recipes")
-    .then((res)=>{
-      const prepared = res.data.map((r)=> ({
-        likes : r.likes || 0,
-        comments : r.comments || [],
-        ...r
-      }));
-      setAllRecipes(prepared);
-      setFilteredRecipes(prepared);
-    })
-    .catch((err)=>{
-      console.error("Error fetching recipies" + err);
-    });
-  },[]);
-  
+      .then((res) => {
+        const recipes = res.data.content;
+        const prepared = recipes.map((r) => ({
+          likes: r.likes || 0,
+          comments: r.comments || [],
+          ...r
+        }));
+        setAllRecipes(prepared);
+        setFilteredRecipes(prepared);
+      })
+      .catch((err) => {
+        console.error("Error fetching recipies" + err);
+      });
+  }, []);
+
   const filterRecipes = (categoryArg, searchArg, source = allRecipes) => {
     let filtered = source;
 
@@ -46,62 +47,72 @@ const Home = () => {
   };
 
   const handleSearch = (term) => {
-  setSearchTerm(term);
+    setSearchTerm(term);
 
-  if (!term.trim()) {
-    api.get("/api/recipes").then((res) => {
-      setAllRecipes(res.data);
-      filterRecipes(selectedCategory, "", res.data);
-    });
-    return;
-  }
+    if (!term.trim()) {
+      api
+        .get("/api/recipes")
+        .then((res) => {
+          const recipes = res.data.content;
+          setAllRecipes(recipes);
+          filterRecipes(selectedCategory, "", recipes);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch recipes", err);
+        });
 
-  api
-    .get(`/api/recipes/search?title=${term}`)
-    .then((res) => {
-      setAllRecipes(res.data);
-      filterRecipes(selectedCategory, term, res.data);
-    })
-    .catch((err) => {
-      console.error("Search failed", err);
-    });
-};
+      return;
+    }
+
+    api
+      .get("/api/recipes/search", {
+        params: { title: term },
+      })
+      .then((res) => {
+        const recipes = res.data.content;
+        setAllRecipes(recipes);
+        filterRecipes(selectedCategory, term, recipes);
+      })
+      .catch((err) => {
+        console.error("Search failed", err);
+      });
+  };
 
 
   const handleLike = (id) => {
-  api
-    .patch(`/api/recipes/${id}/like`)
-    .then((res) => {
-      const updatedRecipe = res.data;
+    api
+      .patch(`/api/recipes/${id}/like`)
+      .then((res) => {
+        const updatedRecipe = res.data;
 
-      const updatedList = allRecipes.map((r) =>
-        r.id === updatedRecipe.id ? updatedRecipe : r
-      );
+        const updatedList = allRecipes.map((r) =>
+          r.id === updatedRecipe.id ? updatedRecipe : r
+        );
 
-      setAllRecipes(updatedList);
-      filterRecipes(selectedCategory, searchTerm, updatedList);
-    })
-    .catch((err) => {
-      console.error("Failed to like recipe", err);
-      alert("Failed to like recipe");
-    });
-};
+        setAllRecipes(updatedList);
+        filterRecipes(selectedCategory, searchTerm, updatedList);
+      })
+      .catch((err) => {
+        console.error("Failed to like recipe", err);
+        alert("Failed to like recipe");
+      });
+  };
 
 
   const handleDeleteRecipe = (id) => {
-  api
-    .delete(`/api/recipes/${id}`)
-    .then(() => {
-      const updated = allRecipes.filter((r) => r.id !== id);
+    api
+      .delete(`/api/recipes/${id}`)
+      .then(() => {
+        const updated = allRecipes.filter((r) => r.id !== id);
 
-      setAllRecipes(updated);
-      filterRecipes(selectedCategory, searchTerm, updated);
-    })
-    .catch((err) => {
-      console.error("Failed to delete recipe", err);
-      alert("Failed to delete recipe");
-    });
-};
+        setAllRecipes(updated);
+        filterRecipes(selectedCategory, searchTerm, updated);
+      })
+      .catch((err) => {
+        console.error("Failed to delete recipe", err);
+        alert("Failed to delete recipe");
+      });
+  };
 
 
   const handleViewRecipe = (recipe) => {
