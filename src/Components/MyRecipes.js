@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import RecipeCard from "./RecipieCard";
+import { useNavigate } from "react-router-dom";
 
 const MyRecipes = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMyRecipes = async () => {
@@ -29,8 +31,7 @@ const MyRecipes = () => {
   }, []);
 
   const handleViewRecipe = (recipe) => {
-    // We'll connect this to our existing recipe details page.
-    console.log("Selected recipe:", recipe);
+    navigate(`/recipe-details/${recipe.id}`);
   };
 
     const handleDeleteRecipe = async (id) => {
