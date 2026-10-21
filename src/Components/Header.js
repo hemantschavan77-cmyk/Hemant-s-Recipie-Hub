@@ -68,6 +68,15 @@ const Header = () => {
             Upload Recipe
           </Link>
 
+          {isLoggedIn && (
+            <Link
+              to="/my-recipes"
+              className={getLinkClasses('/my-recipes')}
+            >
+              My Recipes
+            </Link>
+          )}
+
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
@@ -117,8 +126,18 @@ const Header = () => {
             onClick={() => setIsOpen(false)}
             className={getLinkClasses('/submit', true)}
           >
-            Submit Recipe
+            Upload Recipe
           </Link>
+
+          {isLoggedIn && (
+            <Link
+              to="/my-recipes"
+              onClick={() => setIsOpen(false)}
+              className={getLinkClasses('/my-recipes', true)}
+            >
+              My Recipes
+            </Link>
+          )}
 
           {isLoggedIn ? (
             <button

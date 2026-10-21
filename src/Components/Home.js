@@ -169,6 +169,7 @@ const Home = () => {
                   onLike={() => handleLike(recipe.id)}
                   onDelete={() => handleDeleteRecipe(recipe.id)}
                   onSave={handleSaveRecipe}
+                  showDelete={false}
                 />
               ))
             )}

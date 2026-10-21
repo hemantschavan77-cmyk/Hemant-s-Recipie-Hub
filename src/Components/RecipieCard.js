@@ -3,7 +3,7 @@ import { FaStar, FaRegStar } from 'react-icons/fa';
 import { HiOutlineBookmark } from 'react-icons/hi';
 import { getToken } from '../utils/authStorage';
 
-const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete, onSave }) => {
+const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete, onSave, showDelete }) => {
   const { title, imageBase64, category, rating = 3, id } = recipe;
 
   
@@ -96,12 +96,14 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete, onSave }) => {
           >
             View Recipe
           </button>
-          <button
+         {showDelete &&  <button
             onClick={handleDelete}
             className="py-1 px-2 bg-red-100 text-red-600 rounded-lg text-sm hover:bg-red-200 transition"
           >
             Delete
           </button>
+
+         }
         </div>
       </div>
     </div>  

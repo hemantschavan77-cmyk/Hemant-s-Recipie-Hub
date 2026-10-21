@@ -7,6 +7,7 @@ import SubmitRecipie from './Components/SubmitRecipie';
 import Home from './Components/Home';
 import Login from './Components/Login';
 import RecipeDetails from "./Components/RecipeDetails";
+import MyRecipes from './Components/MyRecipes';
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/submit" element={<SubmitRecipie />} />
           <Route path="/login" element={<Login />} />
           <Route path="/recipe-details/:id" element={<RecipeDetails />} />
+          <Route path='/my-recipes' element={<MyRecipes/>}/>
         </Routes>
       </Router>
 
