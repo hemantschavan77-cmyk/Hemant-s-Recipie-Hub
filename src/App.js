@@ -8,6 +8,7 @@ import Home from './Components/Home';
 import Login from './Components/Login';
 import RecipeDetails from "./Components/RecipeDetails";
 import MyRecipes from './Components/MyRecipes';
+import SavedRecipes from './Components/SavedRecipes';
 
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/recipe-details/:id" element={<RecipeDetails />} />
           <Route path='/my-recipes' element={<MyRecipes/>}/>
+          <Route path='/saved-recipes'element={<SavedRecipes/>}/>
         </Routes>
       </Router>
 
