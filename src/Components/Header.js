@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { getToken, logoutUser } from '../utils/authStorage';
@@ -22,7 +22,7 @@ const Header = () => {
     };
   }, []);
 
-  
+
   const getLinkClasses = (path, isMobile = false) => {
     const isActive = location.pathname === path;
 
@@ -77,6 +77,15 @@ const Header = () => {
             </Link>
           )}
 
+          {isLoggedIn && (
+            <Link
+              to="/saved-recipes"
+              className={getLinkClasses('/saved-recipes')}
+            >
+              Saved Recipes
+            </Link>
+          )}
+
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
@@ -110,7 +119,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Navigation */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 pt-2 pb-5 space-y-2 shadow-lg transition-all duration-200 animate-slideDown">
           <Link
@@ -136,6 +145,16 @@ const Header = () => {
               className={getLinkClasses('/my-recipes', true)}
             >
               My Recipes
+            </Link>
+          )}
+
+          {isLoggedIn && (
+            <Link
+              to="/saved-recipes"
+              onClick={() => setIsOpen(false)}
+              className={getLinkClasses('/saved-recipes', true)}
+            >
+              Saved Recipes
             </Link>
           )}
 
