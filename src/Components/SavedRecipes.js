@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import RecipeCard from "./RecipieCard";
+import toast from "react-hot-toast";
 
 const SavedRecipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -46,15 +47,15 @@ const SavedRecipes = () => {
                     prevRecipes.filter((recipe) => recipe.id !== id)
                 );
 
-                alert("Recipe removed from saved recipes.");
+                toast.success("Recipe removed from saved recipes.");
             }
         } catch (err) {
             console.error("Failed to remove saved recipe:", err);
 
             if (err.response?.status === 401 || err.response?.status === 403) {
-                alert("Your session may have expired. Please log in again.");
+                toast.error("Your session may have expired. Please log in again.");
             } else {
-                alert("Failed to remove saved recipe. Please try again.");
+                toast.error("Failed to remove saved recipe. Please try again.");
             }
         }
     };

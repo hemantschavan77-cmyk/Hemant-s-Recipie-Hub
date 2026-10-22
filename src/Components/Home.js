@@ -3,6 +3,7 @@ import HeroSection from "./HeroSection";
 import RecipeCard from "./RecipieCard";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import toast from "react-hot-toast";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -94,7 +95,11 @@ const Home = () => {
       })
       .catch((err) => {
         console.error("Failed to like recipe", err);
-        alert("Failed to like recipe");
+          if (err.response?.status === 401 || err.response?.status === 403) {
+        toast.error("Your session may have expired. Please log in again.");
+      } else {
+        toast.error("Failed to like recipe. Please try again.");
+      }
       });
   };
 
@@ -104,36 +109,20 @@ const Home = () => {
       .then((res) => {
         const isSaved = res.data;
 
-        alert(
-          isSaved
-            ? "Recipe saved successfully!"
-            : "Recipe removed from saved recipes."
-        );
+        if (isSaved) {
+        toast.success("Recipe saved successfully!");
+      } else {
+        toast("Recipe removed from saved recipes.");
+      }
       })
       .catch((err) => {
         console.error("Failed to save recipe", err);
 
         if (err.response?.status === 401 || err.response?.status === 403) {
-          alert("Your session may have expired. Please log in again.");
+          toast.error("Your session may have expired. Please log in again.");
         } else {
-          alert("Failed to update saved recipe. Please try again.");
+          toast.error("Failed to update saved recipe. Please try again.");
         }
-      });
-  };
-
-
-  const handleDeleteRecipe = (id) => {
-    api
-      .delete(`/api/recipes/${id}`)
-      .then(() => {
-        const updated = allRecipes.filter((r) => r.id !== id);
-
-        setAllRecipes(updated);
-        filterRecipes(selectedCategory, searchTerm, updated);
-      })
-      .catch((err) => {
-        console.error("Failed to delete recipe", err);
-        alert("Failed to delete recipe");
       });
   };
 
@@ -167,7 +156,6 @@ const Home = () => {
                   recipe={recipe}
                   onViewRecipe={() => handleViewRecipe(recipe)}
                   onLike={() => handleLike(recipe.id)}
-                  onDelete={() => handleDeleteRecipe(recipe.id)}
                   onSave={handleSaveRecipe}
                   showDelete={false}
                 />

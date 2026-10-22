@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import RecipeCard from "./RecipieCard";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const MyRecipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -50,14 +51,14 @@ const MyRecipes = () => {
                 prevRecipes.filter((recipe) => recipe.id !== id)
             );
 
-            alert("Recipe deleted successfully!");
+            toast.success("Recipe deleted successfully!");
         } catch (err) {
             console.error("Failed to delete recipe:", err);
 
             if (err.response?.status === 401 || err.response?.status === 403) {
-                alert("You are not authorized to delete this recipe. Please log in again if your session has expired.");
+                toast.error("You are not authorized to delete this recipe. Please log in again if your session has expired.");
             } else {
-                alert("Failed to delete recipe. Please try again.");
+                toast.error("Failed to delete recipe. Please try again.");
             }
         }
     };

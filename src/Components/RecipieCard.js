@@ -2,6 +2,7 @@ import React from 'react';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import { HiOutlineBookmark } from 'react-icons/hi';
 import { getToken } from '../utils/authStorage';
+import toast from 'react-hot-toast';
 
 const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete, onSave, showDelete }) => {
   const { title, imageBase64, category, rating = 3, id } = recipe;
@@ -13,7 +14,7 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete, onSave, showDelete
     e.stopPropagation();
     if(!getToken())
     {
-      alert("Please Log in to like recipes");
+      toast("Please Log in to like recipes");
       return;
     }
 
@@ -27,7 +28,7 @@ const RecipeCard = ({ recipe, onViewRecipe, onLike, onDelete, onSave, showDelete
   e.stopPropagation();
 
     if (!getToken()) {
-      alert("Please log in to save recipes.");
+      toast("Please log in to save recipes.");
       return;
     }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { saveToken } from '../utils/authStorage';
 import api from '../api/axios';
+import toast from 'react-hot-toast';
 
 const MailIcon = () => <span className="text-xl mr-2">📧</span>;
 const LockIcon = () => <span className="text-xl mr-2">🔒</span>;
@@ -31,12 +32,13 @@ const handleSubmit = async (e) => {
       const token = response.data.token;
 
       if (!token) {
-        return alert("Login failed. The server did not return a token.");
+        toast.error("Login failed. The server did not return a token.");
+        return;
       }
 
       saveToken(token);
 
-      alert("Login successful!");
+      toast.success("Login successful!");
       navigate("/");
     } else {
       await api.post("/api/users/register", {
@@ -44,7 +46,7 @@ const handleSubmit = async (e) => {
         password,
       });
 
-      alert(
+      toast.success(
         "Registration successful! Please verify your email before logging in."
       );
 
@@ -62,7 +64,7 @@ const handleSubmit = async (e) => {
           responseData?.error ||
           "Something went wrong. Please try again.";
 
-    alert(message);
+    toast.error(message);
   }
 };
 

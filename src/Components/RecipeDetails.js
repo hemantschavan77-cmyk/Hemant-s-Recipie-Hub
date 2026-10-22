@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { getToken } from "../utils/authStorage";
 import { HiOutlineBookmark } from "react-icons/hi";
+import toast from "react-hot-toast";
 
 const RecipeDetails = () => {
 
@@ -17,7 +18,7 @@ const RecipeDetails = () => {
 
   const handleLike = async () => {
     if (!getToken()) {
-      alert("Please log in to like recipes.");
+      toast("Please log in to like recipes.");
       return;
     }
 
@@ -28,9 +29,9 @@ const RecipeDetails = () => {
       console.error("Failed to like recipe:", err);
 
       if (err.response?.status === 401 || err.response?.status === 403) {
-        alert("Your session may have expired. Please log in again.");
+        toast.error("Your session may have expired. Please log in again.");
       } else {
-        alert("Failed to like recipe. Please try again.");
+        toast.error("Failed to like recipe. Please try again.");
       }
     }
   };
@@ -38,7 +39,7 @@ const RecipeDetails = () => {
 
   const handleSave = async () => {
     if (!getToken()) {
-      alert("Please log in to save recipes.");
+      toast("Please log in to save recipes.");
       return;
     }
 
@@ -46,18 +47,18 @@ const RecipeDetails = () => {
       const response = await api.patch(`/api/recipes/${id}/save`);
       const isSaved = response.data;
 
-      alert(
-        isSaved
-          ? "Recipe saved successfully!"
-          : "Recipe removed from saved recipes."
-      );
+       if (isSaved) {
+      toast.success("Recipe saved successfully!");
+    } else {
+      toast("Recipe removed from saved recipes.");
+    }
     } catch (err) {
       console.error("Failed to save recipe:", err);
 
       if (err.response?.status === 401 || err.response?.status === 403) {
-        alert("Your session may have expired. Please log in again.");
+        toast.error("Your session may have expired. Please log in again.");
       } else {
-        alert("Failed to update saved recipe. Please try again.");
+        toast.error("Failed to update saved recipe. Please try again.");
       }
     }
   };

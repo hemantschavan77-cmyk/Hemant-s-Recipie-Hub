@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 // import { saveRecipe } from '../utils/localStorage';  //replaced with backend
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import toast from 'react-hot-toast';
 
 const RecipeIcon = () => <span className="text-xl">🍲</span>;
 const IngredientIcon = () => <span className="text-xl">🥕</span>;
@@ -55,14 +56,16 @@ const SubmitRecipie = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!recipeTitle.trim() || !description.trim() || !category || ingredients.length === 0 || ingredients.every(i => !i.trim())) {
-      setModalData({
-        title: 'Submission Error',
-        message: 'Please fill out all required fields.'
-      });
-      setIsModalOpen(true);
-      return;
-    }
+    if (
+  !recipeTitle.trim() ||
+  !description.trim() ||
+  !category ||
+  ingredients.length === 0 ||
+  ingredients.every((i) => !i.trim())
+) {
+  toast.error("Please fill out all required fields.");
+  return;
+}
 
     
   api.post("/api/recipes", {
@@ -76,11 +79,14 @@ const SubmitRecipie = () => {
 .then((res) => {
   const savedRecipe = res.data;
 
+  toast.success("Recipe submitted successfully!");
+
   setModalData({
-    title: "Recipe submitted successfully !!!",
-    message: "Your recipe has been saved and will appear on home page",
+    title: "Recipe submitted successfully!",
+    message: "Your recipe has been saved and will appear on the home page.",
     details: savedRecipe,
   });
+
   setIsModalOpen(true);
 
   setRecipeTitle('');
@@ -91,11 +97,16 @@ const SubmitRecipie = () => {
   setImageFile(null);
 })
 .catch((err) => {
-  setModalData({
-    title: "Submission error",
-    message: err.response?.data?.message || err.message,
-  });
-  setIsModalOpen(true);
+  console.error("Failed to submit recipe:", err);
+
+  const message =
+    typeof err.response?.data === "string"
+      ? err.response.data
+      : err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Failed to submit recipe. Please try again.";
+
+  toast.error(message);
 });
 
     
