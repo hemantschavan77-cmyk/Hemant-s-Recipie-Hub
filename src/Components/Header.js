@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { getToken, logoutUser } from '../utils/authStorage';
+import toast from 'react-hot-toast';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -46,6 +47,21 @@ const Header = () => {
     navigate('/');
   };
 
+  const handleRestrictedNavigation = (e, path, feature) => {
+    if (!getToken()) {
+      e.preventDefault();
+      setIsOpen(false);
+      toast.error(`Please log in or sign up to access ${feature}.`, {
+        duration: 3000,
+      });
+      navigate('/login', {
+        state: { from: path },
+      });
+    } else {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-md transition-shadow duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
@@ -64,27 +80,35 @@ const Header = () => {
             Home
           </Link>
 
-          <Link to="/submit" className={getLinkClasses('/submit')}>
+          <Link
+            to="/submit"
+            onClick={(e) =>
+              handleRestrictedNavigation(e, '/submit', 'Upload Recipe')
+            }
+            className={getLinkClasses('/submit')}
+          >
             Upload Recipe
           </Link>
 
-          {isLoggedIn && (
-            <Link
-              to="/my-recipes"
-              className={getLinkClasses('/my-recipes')}
-            >
-              My Recipes
-            </Link>
-          )}
+          <Link
+            to="/my-recipes"
+            onClick={(e) =>
+              handleRestrictedNavigation(e, '/my-recipes', 'My Recipes')
+            }
+            className={getLinkClasses('/my-recipes')}
+          >
+            My Recipes
+          </Link>
 
-          {isLoggedIn && (
-            <Link
-              to="/saved-recipes"
-              className={getLinkClasses('/saved-recipes')}
-            >
-              Saved Recipes
-            </Link>
-          )}
+          <Link
+            to="/saved-recipes"
+            onClick={(e) =>
+              handleRestrictedNavigation(e, '/saved-recipes', 'Saved Recipes')
+            }
+            className={getLinkClasses('/saved-recipes')}
+          >
+            Saved Recipes
+          </Link>
 
           {isLoggedIn ? (
             <button
@@ -132,31 +156,33 @@ const Header = () => {
 
           <Link
             to="/submit"
-            onClick={() => setIsOpen(false)}
+            onClick={(e) =>
+              handleRestrictedNavigation(e, '/submit', 'Upload Recipe')
+            }
             className={getLinkClasses('/submit', true)}
           >
             Upload Recipe
           </Link>
 
-          {isLoggedIn && (
-            <Link
-              to="/my-recipes"
-              onClick={() => setIsOpen(false)}
-              className={getLinkClasses('/my-recipes', true)}
-            >
-              My Recipes
-            </Link>
-          )}
+          <Link
+            to="/my-recipes"
+            onClick={(e) =>
+              handleRestrictedNavigation(e, '/my-recipes', 'My Recipes')
+            }
+            className={getLinkClasses('/my-recipes', true)}
+          >
+            My Recipes
+          </Link>
 
-          {isLoggedIn && (
-            <Link
-              to="/saved-recipes"
-              onClick={() => setIsOpen(false)}
-              className={getLinkClasses('/saved-recipes', true)}
-            >
-              Saved Recipes
-            </Link>
-          )}
+          <Link
+            to="/saved-recipes"
+            onClick={(e) =>
+              handleRestrictedNavigation(e, '/saved-recipes', 'Saved Recipes')
+            }
+            className={getLinkClasses('/saved-recipes', true)}
+          >
+            Saved Recipes
+          </Link>
 
           {isLoggedIn ? (
             <button
