@@ -10,6 +10,7 @@ import RecipeDetails from "./Components/RecipeDetails";
 import MyRecipes from './Components/MyRecipes';
 import SavedRecipes from './Components/SavedRecipes';
 import { Toaster } from 'react-hot-toast';
+import PopularRecipes from './Components/PopularRecipes';
 
 
 
@@ -54,6 +55,7 @@ const App = () => {
           <Route path="/recipe-details/:id" element={<RecipeDetails />} />
           <Route path='/my-recipes' element={<MyRecipes />} />
           <Route path='/saved-recipes' element={<SavedRecipes />} />
+          <Route path='/popular-recipes' element={<PopularRecipes/>}/>
         </Routes>
       </Router>
 
